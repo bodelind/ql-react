@@ -11,8 +11,7 @@ const Wrapper = styled.div`
 const Input = styled.input<{ isError: boolean }>`
 	margin-top: 2px;
 	border-radius: 5px;
-	color: ${({ isError }) => (isError ? 'solid #dc3545 1px' : 'solid blue 1px')};
-	border: solid blue 1px;
+	border: ${({ isError }) => (isError ? 'solid #dc3545 1px' : 'solid #0031a5 1px')};
 	height: 30px;
 	padding: 4px;
 	padding-left: 10px;

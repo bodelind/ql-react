@@ -42,13 +42,13 @@ const DropdownSectionWrapper = styled.div`
 	gap: 16px;
 `;
 
-const Dropdown = styled.select`
+const Dropdown = styled.select<{ isError: boolean }>`
 	display: flex;
 	width: 100%;
 	height: 40px;
 	padding: 4px;
 	border-radius: 5px;
-	border: solid blue 1px;
+	border: ${({ isError }) => (isError ? 'solid #dc3545 1px' : 'solid #0031a5 1px')};
 	font-weight: bold;
 	&:focus {
 		outline: none;
@@ -137,7 +137,10 @@ const CreditCard = () => {
 	const onSubmit = () => {
 		const validation = validateCreditCardInfo(cardInfo);
 		setValidation(validation);
-		if (Object.values(validation).every((x) => x === false)) alert('Created');
+		if (Object.values(validation).every((x) => x === false)) {
+			alert('Created');
+			setCardInfo(initialCreditCardInfo);
+		}
 	};
 
 	const onKeyDown = (e: KeyboardEvent<HTMLInputElement>) => {
@@ -181,6 +184,7 @@ const CreditCard = () => {
 						<InputSectionWrapper>
 							<Dropdown
 								{...{
+									isError: validation.isExpirationMonthError,
 									value: cardInfo.expirationMonth || '',
 									name: 'expirationMonth',
 									onChange: (e) => onCreditInfoChange(e.target.value, e.target.name),
@@ -201,6 +205,7 @@ const CreditCard = () => {
 						<InputSectionWrapper>
 							<Dropdown
 								{...{
+									isError: validation.isExpirationYearError,
 									value: cardInfo.expirationYear || '',
 									name: 'expirationYear',
 									onChange: (e) => onCreditInfoChange(e.target.value, e.target.name),
