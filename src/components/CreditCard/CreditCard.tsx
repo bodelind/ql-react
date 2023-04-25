@@ -1,4 +1,4 @@
-import { ChangeEvent, useEffect, useState } from 'react';
+import { ChangeEvent, KeyboardEvent, useEffect, useState } from 'react';
 import styled from 'styled-components';
 import { ICreditCardInfo } from '../../models/ICreditCardInfo';
 import dayjs from 'dayjs';
@@ -11,9 +11,10 @@ import { ICreditCardValidation } from '../../models/ICreditCardValidation';
 const Wrapper = styled.div`
 	display: flex;
 	gap: 24px;
+	flex-wrap: wrap;
 `;
 
-const SectionWrapper = styled.div<{ isCardPreview: boolean }>`
+const SectionWrapper = styled.div<{ isCardPreview: boolean; height?: string }>`
 	display: flex;
 	flex-direction: column;
 	align-items: center;
@@ -25,6 +26,7 @@ const SectionWrapper = styled.div<{ isCardPreview: boolean }>`
 	border-radius: 15px;
 	color: ${({ isCardPreview }) => (isCardPreview ? '#fad3ff' : '')};
 	box-shadow: #fad3ff 1px 1px 7px 2px;
+	${({ height }) => (height ? `height: ${height};` : null)};
 `;
 
 const InputSectionWrapper = styled.div`
@@ -66,6 +68,19 @@ const BottomWrapper = styled.div`
 	margin-top: 16px;
 `;
 
+const CardPreviewText = styled.span<{ uppercase?: boolean }>`
+	font-weight: bold;
+	font-size: 25px;
+	${({ uppercase }) => uppercase && 'text-transform: uppercase;'};
+`;
+
+const CardPreviewProperty = styled.div<{ alignItems?: string }>`
+	display: flex;
+	flex-direction: column;
+	width: 100%;
+	${({ alignItems }) => alignItems && `align-items: ${alignItems};`};
+`;
+
 const initialCreditCardInfo: ICreditCardInfo = {
 	cardHolder: '',
 	cardNumber: '',
@@ -81,6 +96,8 @@ const initialValidation: ICreditCardValidation = {
 	isExpirationMonthError: false,
 	isExpirationYearError: false,
 };
+
+const isNumberRegEx = /[0-9\n]/;
 
 const CreditCard = () => {
 	const [cardInfo, setCardInfo] = useState(initialCreditCardInfo);
@@ -113,14 +130,18 @@ const CreditCard = () => {
 	};
 
 	const onCvcChange = (value: string) => {
-		if (cardInfo.cvc.length > 2) return;
 		if (validation.isCVCError) setValidation({ ...validation, isCVCError: false });
 		setCardInfo({ ...cardInfo, ...{ cvc: value } });
 	};
 
-	const validateCreditCard = () => {
+	const onSubmit = () => {
 		const validation = validateCreditCardInfo(cardInfo);
 		setValidation(validation);
+		if (Object.values(validation).every((x) => x === false)) alert('Created');
+	};
+
+	const onKeyDown = (e: KeyboardEvent<HTMLInputElement>) => {
+		if (e.key !== 'Backspace' && !isNumberRegEx.test(e.key)) e.preventDefault();
 	};
 
 	return (
@@ -131,7 +152,9 @@ const CreditCard = () => {
 					{...{
 						label: 'Card number',
 						type: 'number',
-						errorText: validation.isCardNumberError ? 'Card number is required' : null,
+						errorText: validation.isCardNumberError
+							? 'Card number is required and must be between 6 and 16 numbers'
+							: null,
 						name: 'cardNumber',
 						placeholder: 'Card number',
 						value: cardInfo.cardNumber || '',
@@ -205,17 +228,40 @@ const CreditCard = () => {
 						name: 'cvc',
 						placeholder: 'CVC',
 						value: cardInfo.cvc,
+						maxLength: 3,
+						onKeyDown,
 						onChange: (e: ChangeEvent<HTMLInputElement>) => onCvcChange(e.target.value),
 					}}
 				/>
 				<BottomWrapper>
 					<TextSpan {...{ label: cardType }} />
-					<Button {...{ label: 'Submit', type: 'submit', onClick: validateCreditCard }} />
+					<Button {...{ label: 'Submit', type: 'submit', onClick: onSubmit }} />
 				</BottomWrapper>
 			</SectionWrapper>
-			<SectionWrapper {...{ isCardPreview: true }}>
+			<SectionWrapper {...{ isCardPreview: true, height: '50%' }}>
 				<Header>{cardType}</Header>
-				<p>{cardInfo.cardNumber}</p>
+				<CardPreviewProperty>
+					<TextSpan {...{ label: 'card number' }} />
+					<CardPreviewText>{cardInfo.cardNumber || '012345678910'}</CardPreviewText>
+				</CardPreviewProperty>
+				<CardPreviewProperty>
+					<TextSpan {...{ label: 'card holder' }} />
+					<CardPreviewText {...{ uppercase: true }}>
+						{cardInfo.cardHolder || 'Dwayne "The Rock" Johnson'}
+					</CardPreviewText>
+				</CardPreviewProperty>
+				<BottomWrapper>
+					<CardPreviewProperty>
+						<TextSpan {...{ label: 'expiration date' }} />
+						<CardPreviewText>
+							{cardInfo.expirationMonth || '12'} / {cardInfo.expirationYear || 2222}
+						</CardPreviewText>
+					</CardPreviewProperty>
+					<CardPreviewProperty {...{ alignItems: 'flex-end' }}>
+						<TextSpan {...{ label: 'CVC security code' }} />
+						<CardPreviewText>{cardInfo.cvc || 666}</CardPreviewText>
+					</CardPreviewProperty>
+				</BottomWrapper>
 			</SectionWrapper>
 		</Wrapper>
 	);

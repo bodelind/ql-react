@@ -1,4 +1,4 @@
-import { ChangeEvent } from 'react';
+import { ChangeEvent, KeyboardEvent } from 'react';
 import styled from 'styled-components';
 import TextSpan from '../TextSpan/TextSpan';
 
@@ -34,21 +34,27 @@ const InputField = ({
 	value,
 	placeholder,
 	onChange,
+	onKeyDown,
 	name,
 	label,
+	maxLength,
 }: {
 	errorText: string | null;
 	type: string;
 	value: string;
 	placeholder: string;
 	onChange: (e: ChangeEvent<HTMLInputElement>) => void;
+	onKeyDown?: (e: KeyboardEvent<HTMLInputElement>) => void;
 	name: string;
 	label: string;
+	maxLength?: number;
 }) => {
 	return (
 		<Wrapper>
 			<TextSpan {...{ label }} />
-			<Input {...{ value, type, placeholder, onChange, name, isError: !!errorText }} />
+			<Input
+				{...{ value, type, placeholder, onChange, name, isError: !!errorText, maxLength, onKeyDown }}
+			/>
 			{errorText && <TextSpan {...{ isError: true, label: errorText }} />}
 		</Wrapper>
 	);
