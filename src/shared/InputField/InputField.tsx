@@ -38,10 +38,10 @@ const InputField = ({
 	label,
 	maxLength,
 }: {
-	errorText: string | null;
+	errorText?: string | null;
 	type: string;
 	value: string;
-	placeholder: string;
+	placeholder?: string;
 	onChange: (e: ChangeEvent<HTMLInputElement>) => void;
 	onKeyDown?: (e: KeyboardEvent<HTMLInputElement>) => void;
 	name: string;
