@@ -2,7 +2,7 @@ import { ChangeEvent, KeyboardEvent, useEffect, useState } from 'react';
 import styled from 'styled-components';
 import { ICreditCardInfo } from '../../models/ICreditCardInfo';
 import dayjs from 'dayjs';
-import { validateCardNumber, validateCreditCardInfo } from './Validation';
+import { isAmEx, validateCardNumber, validateCreditCardInfo } from './Validation';
 import InputField from '../../shared/InputField/InputField';
 import TextSpan from '../../shared/TextSpan/TextSpan';
 import Button from '../../shared/Button/Button';
@@ -129,12 +129,8 @@ const CreditCard = () => {
 		}
 	};
 
-	const onKeyDown = (e: KeyboardEvent<HTMLInputElement>, isCardNumber: boolean = false) => {
-		if (
-			(e.key !== 'Backspace' && !isNumberRegEx.test(e.key)) ||
-			(e.key !== 'Backspace' && isCardNumber && cardInfo.cardNumber.length === 16)
-		)
-			e.preventDefault();
+	const onKeyDown = (e: KeyboardEvent<HTMLInputElement>) => {
+		if (e.key !== 'Backspace' && !isNumberRegEx.test(e.key)) e.preventDefault();
 	};
 
 	return (
@@ -149,7 +145,6 @@ const CreditCard = () => {
 							? 'Card number is required and must be between 10 and 16 numbers'
 							: null,
 						name: 'cardNumber',
-						onKeyDown: (e: KeyboardEvent<HTMLInputElement>) => onKeyDown(e, true),
 						placeholder: 'Card number',
 						value: cardInfo.cardNumber || '',
 						onChange: (e: ChangeEvent<HTMLInputElement>) =>
@@ -221,11 +216,13 @@ const CreditCard = () => {
 					{...{
 						label: 'CVC',
 						type: 'text',
-						errorText: validation.isCVCError ? 'CVC is required' : null,
+						errorText: validation.isCVCError
+							? `CVC with a length of ${isAmEx(cardInfo.cardNumber) ? 4 : 3} is required`
+							: null,
 						name: 'cvc',
 						placeholder: 'CVC',
 						value: cardInfo.cvc,
-						maxLength: 3,
+						maxLength: isAmEx(cardInfo.cardNumber) ? 4 : 3,
 						onKeyDown,
 						onChange: (e: ChangeEvent<HTMLInputElement>) => onCvcChange(e.target.value),
 					}}
