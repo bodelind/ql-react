@@ -1,7 +1,7 @@
 import styled from 'styled-components';
 import SectionWrapper from '../../shared/SectionWrapper/SectionWrapper';
 import InputField from '../../shared/InputField/InputField';
-import { ChangeEvent, useEffect, useState } from 'react';
+import { ChangeEvent, useState } from 'react';
 import Button from '../../shared/Button/Button';
 import TextSpan from '../../shared/TextSpan/TextSpan';
 
