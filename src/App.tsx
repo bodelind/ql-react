@@ -1,8 +1,8 @@
 import styled from 'styled-components';
 import GlobalStyles from './GlobalStyles';
 import CreditCard from './components/CreditCard/CreditCard';
-import RemoveLetter from './components/Algortihms/RemoveLetter';
-import LargestOddSum from './components/Algortihms/LargestOddSum';
+import RemoveLetter from './components/Algorithms/RemoveLetter';
+import LargestOddSum from './components/Algorithms/LargestOddSum';
 
 const Wrapper = styled.div`
 	display: flex;
