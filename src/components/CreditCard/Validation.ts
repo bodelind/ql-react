@@ -24,7 +24,7 @@ export const validateCardNumber = (number: string) => {
 export const validateCreditCardInfo = (creditCard: ICreditCardInfo): ICreditCardValidation => {
 	const model: ICreditCardValidation = {
 		isCardNameError: creditCard.cardHolder.length === 0,
-		isCardNumberError: creditCard.cardNumber.length > 16 || creditCard.cardNumber.length < 9,
+		isCardNumberError: creditCard.cardNumber.length > 16 || creditCard.cardNumber.length < 10,
 		isCVCError: creditCard.cvc.length < 3,
 		isExpirationMonthError: !creditCard.expirationMonth,
 		isExpirationYearError: !creditCard.expirationYear,

@@ -129,8 +129,12 @@ const CreditCard = () => {
 		}
 	};
 
-	const onKeyDown = (e: KeyboardEvent<HTMLInputElement>) => {
-		if (e.key !== 'Backspace' && !isNumberRegEx.test(e.key)) e.preventDefault();
+	const onKeyDown = (e: KeyboardEvent<HTMLInputElement>, isCardNumber: boolean = false) => {
+		if (
+			(e.key !== 'Backspace' && !isNumberRegEx.test(e.key)) ||
+			(e.key !== 'Backspace' && isCardNumber && cardInfo.cardNumber.length === 16)
+		)
+			e.preventDefault();
 	};
 
 	return (
@@ -142,9 +146,10 @@ const CreditCard = () => {
 						label: 'Card number',
 						type: 'number',
 						errorText: validation.isCardNumberError
-							? 'Card number is required and must be between 6 and 16 numbers'
+							? 'Card number is required and must be between 10 and 16 numbers'
 							: null,
 						name: 'cardNumber',
+						onKeyDown: (e: KeyboardEvent<HTMLInputElement>) => onKeyDown(e, true),
 						placeholder: 'Card number',
 						value: cardInfo.cardNumber || '',
 						onChange: (e: ChangeEvent<HTMLInputElement>) =>
@@ -155,6 +160,7 @@ const CreditCard = () => {
 					{...{
 						label: 'Card holder',
 						type: 'text',
+						maxLength: 25,
 						errorText: validation.isCardNameError ? 'Card name is required' : null,
 						name: 'cardHolder',
 						placeholder: 'Card holder',
@@ -233,7 +239,9 @@ const CreditCard = () => {
 				<Header>{cardType}</Header>
 				<CardPreviewProperty>
 					<TextSpan {...{ label: 'card number' }} />
-					<CardPreviewText>{cardInfo.cardNumber || '012345678910'}</CardPreviewText>
+					<CardPreviewText>
+						{cardInfo.cardNumber.match(/.{1,4}/g)?.join(' ') || '012345678910'}
+					</CardPreviewText>
 				</CardPreviewProperty>
 				<CardPreviewProperty>
 					<TextSpan {...{ label: 'card holder' }} />
