@@ -29,7 +29,7 @@ export const validateCreditCardInfo = (creditCard: ICreditCardInfo): ICreditCard
 	const model: ICreditCardValidation = {
 		isCardNameError: creditCard.cardHolder.length === 0,
 		isCardNumberError: creditCard.cardNumber.length > 16 || creditCard.cardNumber.length < 10,
-		isCVCError: creditCard.cvc.length < (isAmEx(creditCard.cardNumber) ? 4 : 3),
+		isCVCError: isAmEx(creditCard.cardNumber) ? creditCard.cvc.length < 4 : creditCard.cvc.length !== 3,
 		isExpirationMonthError: !creditCard.expirationMonth,
 		isExpirationYearError: !creditCard.expirationYear,
 	};
