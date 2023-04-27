@@ -40,7 +40,7 @@ const InputField = ({
 }: {
 	errorText?: string | null;
 	type: string;
-	value: string;
+	value?: string;
 	placeholder?: string;
 	onChange: (e: ChangeEvent<HTMLInputElement>) => void;
 	onKeyDown?: (e: KeyboardEvent<HTMLInputElement>) => void;
