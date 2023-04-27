@@ -240,7 +240,7 @@ const CreditCard = () => {
 				<CardPreviewProperty>
 					<TextSpan {...{ label: 'card number' }} />
 					<CardPreviewText>
-						{cardInfo.cardNumber.match(/.{1,4}/g)?.join(' ') || '012345678910'}
+						{(cardInfo.cardNumber || '012345678910').match(/.{1,4}/g)?.join(' ')}
 					</CardPreviewText>
 				</CardPreviewProperty>
 				<CardPreviewProperty>
