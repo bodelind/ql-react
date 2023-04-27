@@ -36,7 +36,7 @@ const App = () => {
 	return (
 		<Wrapper>
 			<GlobalStyles />
-			<Header>Queens lab evaluation assignment</Header>
+			<Header>QueensLab evaluation assignment</Header>
 			<ComponentsWrapper>
 				<CreditCard />
 				<AlgorithmsWrapper>
